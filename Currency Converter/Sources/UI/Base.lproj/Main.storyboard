@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tcl-Ba-cCY">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="VPQ-bH-zdW">
+            <objects>
+                <navigationController id="tcl-Ba-cCY" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="YAF-u5-PEj">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="2Bd-di-gIG"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fmJ-dg-wxU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1209" y="56"/>
+        </scene>
+        <!--Home-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="HomeViewController" customModule="Currency_Converter" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dyw-A3-xXQ">
+                                <rect key="frame" x="0.0" y="88" width="414" height="143"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="143" id="zi1-t2-cDb"/>
+                                </constraints>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="jxw-Kd-LB9">
+                                <rect key="frame" x="0.0" y="231" width="414" height="631"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemGray5Color"/>
+                        <constraints>
+                            <constraint firstItem="jxw-Kd-LB9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Fzn-RP-vZK"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dyw-A3-xXQ" secondAttribute="trailing" id="K0J-PZ-rnr"/>
+                            <constraint firstItem="dyw-A3-xXQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Mdw-Ib-6rM"/>
+                            <constraint firstItem="jxw-Kd-LB9" firstAttribute="top" secondItem="dyw-A3-xXQ" secondAttribute="bottom" id="bTN-C8-vH3"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="jxw-Kd-LB9" secondAttribute="bottom" id="c7C-jM-BlK"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="jxw-Kd-LB9" secondAttribute="trailing" id="mB4-6I-uHk"/>
+                            <constraint firstItem="dyw-A3-xXQ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="zfp-JJ-moP"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Home" id="iPq-Ed-0rT"/>
+                    <connections>
+                        <outlet property="selectContainer" destination="dyw-A3-xXQ" id="gbZ-Q1-BdV"/>
+                        <outlet property="tableView" destination="jxw-Kd-LB9" id="IQR-yF-kWj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-325" y="56"/>
+        </scene>
+        <!--Currencies-->
+        <scene sceneID="dYf-pQ-bl8">
+            <objects>
+                <viewController storyboardIdentifier="currenciesVC" id="LFL-sJ-adb" customClass="CurrenciesViewController" customModule="Currency_Converter" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="85Q-HX-AKh">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xmo-16-FlT">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="hse-SK-2sf"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="hse-SK-2sf" firstAttribute="trailing" secondItem="xmo-16-FlT" secondAttribute="trailing" id="ARh-KG-oKh"/>
+                            <constraint firstItem="xmo-16-FlT" firstAttribute="top" secondItem="hse-SK-2sf" secondAttribute="top" id="Xhk-pt-BfQ"/>
+                            <constraint firstItem="hse-SK-2sf" firstAttribute="bottom" secondItem="xmo-16-FlT" secondAttribute="bottom" id="bqu-11-dK7"/>
+                            <constraint firstItem="xmo-16-FlT" firstAttribute="leading" secondItem="hse-SK-2sf" secondAttribute="leading" id="rtU-7n-f1P"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Currencies" id="3Cq-Jx-7h5"/>
+                    <connections>
+                        <outlet property="tableView" destination="xmo-16-FlT" id="SVt-NV-pj4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MaL-oj-kU2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="562" y="56"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
