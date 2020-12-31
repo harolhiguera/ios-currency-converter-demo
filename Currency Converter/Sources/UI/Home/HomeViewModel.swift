@@ -30,16 +30,25 @@ struct HomeViewModel {
     init() {
         let convertText = PublishRelay<String?>()
         do {
-            self.input = Input(convertText: convertText)
+            self.input = Input(
+                convertText: convertText)
         }
+        
         convertText
             .map {
                 NSString(string: $0 ?? "0.0").doubleValue
             }
-            .subscribe(onNext: { [self] in
-                self.updateConversions(quantity: $0)
+            .subscribe(onNext: { [self] quantity in
+                self.list.accept(
+                    list.value.map{ item in
+                        HomeTableViewCellDataModel(
+                            rate: item.rate,
+                            conversion: (item.rate.exchangeRate * quantity).roundToDecimal(2))
+                    }
+                )
             })
             .disposed(by: disposeBag)
+    
     }
 
     func fetchData() {
@@ -55,17 +64,6 @@ struct HomeViewModel {
             self.loadInProgress.accept(false)
         }, onCompleted: nil, onDisposed: nil)
         .disposed(by: disposeBag)
-    }
-    
-    func updateConversions(quantity: Double) {
-        list.accept(
-            list.value.map{
-                HomeTableViewCellDataModel(
-                    rate: $0.rate,
-                    conversion: ($0.rate.exchangeRate * quantity).roundToDecimal(2)
-                )
-            }
-        )
     }
 }
 
