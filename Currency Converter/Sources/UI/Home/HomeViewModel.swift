@@ -11,6 +11,8 @@ import RxSwift
 
 struct HomeViewModel {
     
+    let input: Input
+    
     var onShowLoadingProgress: Observable<Bool> {
         return loadInProgress
             .asObservable()
@@ -25,6 +27,24 @@ struct HomeViewModel {
     
     private let dataManager = DataManager.shared
     
+    init() {
+        let convertText = PublishRelay<String?>()
+        do {
+            self.input = Input(convertText: convertText)
+        }
+        convertText
+            .map {
+                guard let char = $0 else {
+                    return 0.0
+                }
+                return NSString(string: char).doubleValue
+            }
+            .subscribe(onNext: { [self] in
+                self.updateConversions(quantity: $0)
+            })
+            .disposed(by: disposeBag)
+    }
+
     
     func fetchData() {
         self.loadInProgress.accept(true)
@@ -54,5 +74,12 @@ struct HomeViewModel {
                 )
             }
         )
+    }
+}
+
+
+extension HomeViewModel {
+    struct Input {
+        let convertText: PublishRelay<String?>
     }
 }

@@ -76,18 +76,13 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
             selectedCurrencyView = SelectedCurrencyView(frame: CGRect.zero)
             selectedCurrencyView!.addToContainer(container: selectContainer)
             addTapGestureRecognizer()
-            
+        
             selectedCurrencyView!.fieldValue
                 .rx
                 .text
                 .observeOn(MainScheduler.asyncInstance)
                 .throttle(.milliseconds(100), latest: false, scheduler: MainScheduler.asyncInstance)
-                .subscribe(onNext: { [weak self] in
-                    guard let char = $0 else {
-                        return
-                    }
-                    self?.viewModel.updateConversions(quantity: NSString(string: char).doubleValue)
-                })
+                .bind(to: viewModel.input.convertText)
                 .disposed(by: disposeBag)
             
             selectedCurrencyView!.buttonChangeCurrency
