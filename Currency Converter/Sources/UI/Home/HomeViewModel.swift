@@ -34,10 +34,7 @@ struct HomeViewModel {
         }
         convertText
             .map {
-                guard let char = $0 else {
-                    return 0.0
-                }
-                return NSString(string: char).doubleValue
+                NSString(string: $0 ?? "0.0").doubleValue
             }
             .subscribe(onNext: { [self] in
                 self.updateConversions(quantity: $0)
@@ -45,24 +42,19 @@ struct HomeViewModel {
             .disposed(by: disposeBag)
     }
 
-    
     func fetchData() {
         self.loadInProgress.accept(true)
         dataManager.fetchModelForHome().subscribe(onNext: { model in
             self.selectedCurrency.onNext(model.selectedCurrency)
-            self.setListItems(model.rates)
+            self.list.accept(
+                model.rates.map{HomeTableViewCellDataModel(rate: $0, conversion: 0.0)}
+            )
             self.loadInProgress.accept(false)
         }, onError: { error in
             self.onShowError.onNext(error)
             self.loadInProgress.accept(false)
         }, onCompleted: nil, onDisposed: nil)
         .disposed(by: disposeBag)
-    }
-    
-    func setListItems(_ realmList: [RealmRate]) {
-        list.accept(
-            realmList.map{HomeTableViewCellDataModel(rate: $0, conversion: 0.0)}
-        )
     }
     
     func updateConversions(quantity: Double) {
