@@ -1,1 +1,1 @@
-Currency Converte Demo
+Currency Converter Demo
