@@ -22,7 +22,7 @@ class CurrenciesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel = CurrenciesViewModel()
+        viewModel = CurrenciesViewModel(dataManager: DataManager())
         tableView.register(UINib(nibName: "CurrenciesTableViewCell", bundle: nil), forCellReuseIdentifier: cellIdentifier)
         subscribe()
         viewModel.fetchData()

@@ -22,7 +22,7 @@ struct CurrenciesViewModel {
     private let loadInProgress = BehaviorRelay(value: false)
     let disposeBag = DisposeBag()
     
-    private let dataManager = DataManager.shared
+    let dataManager: DataManager
     
     
     func fetchData() {

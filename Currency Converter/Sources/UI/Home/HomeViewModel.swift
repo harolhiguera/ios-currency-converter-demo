@@ -25,9 +25,11 @@ struct HomeViewModel {
     private let loadInProgress = BehaviorRelay(value: false)
     let disposeBag = DisposeBag()
     
-    private let dataManager = DataManager.shared
+    let dataManager: DataManager
     
-    init() {
+    init(dataManager: DataManager) {
+        self.dataManager = dataManager
+        
         let convertText = PublishRelay<String?>()
         do {
             self.input = Input(

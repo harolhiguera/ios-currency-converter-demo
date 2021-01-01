@@ -11,13 +11,11 @@ import Moya
 import Alamofire
 import RealmSwift
 
-struct DataManager {
+class DataManager {
     var apiProvider: MoyaProvider<ApiProvider>
     let currenciesRepository: CurrenciesRepository
     let ratesRepository: RatesRepository
     let realm: Realm
-    
-    static let shared = DataManager()
     
     init() {
         apiProvider = MoyaProvider<ApiProvider>()
@@ -91,8 +89,10 @@ struct DataManager {
                     .flatMap({ _ in
                         self.fetchRatesFromServer()
                             .asObservable()
-                            .flatMap({ getRatesResponse in
-                                self.ratesRepository.updateRates(entry: getRatesResponse, currenciesRepository: currenciesRepository)
+                            .flatMap({ [self] getRatesResponse in
+                                self.ratesRepository.updateRates(
+                                    entry: getRatesResponse,
+                                    currenciesRepository: self.currenciesRepository)
                                     .flatMap({ _ in
                                         self.updateNextUpdatedAt()
                                     })

@@ -24,7 +24,7 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel = HomeViewModel()
+        viewModel = HomeViewModel(dataManager: DataManager())
         tableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellIdentifier)
         subscribe()
         setUpSelectCurrencyContainer()

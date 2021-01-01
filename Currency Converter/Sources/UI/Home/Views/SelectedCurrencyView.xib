@@ -37,15 +37,15 @@
                     <state key="normal" title="Change Currency"/>
                 </button>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3QK-ER-8aI">
-                    <rect key="frame" x="20" y="76" width="353" height="40"/>
+                    <rect key="frame" x="20" y="75.5" width="353" height="40"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="goK-Tu-79s"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                 </textField>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rn4-fT-hyo">
-                    <rect key="frame" x="20" y="47" width="41.5" height="21"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rn4-fT-hyo">
+                    <rect key="frame" x="20" y="47" width="209" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -61,6 +61,7 @@
                 <constraint firstItem="Rn4-fT-hyo" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="bXl-GG-z22"/>
                 <constraint firstAttribute="trailing" secondItem="3QK-ER-8aI" secondAttribute="trailing" constant="20" id="evg-be-wcp"/>
                 <constraint firstAttribute="trailing" secondItem="LfJ-KQ-Ln7" secondAttribute="trailing" constant="20" id="f50-IX-tW0"/>
+                <constraint firstItem="LfJ-KQ-Ln7" firstAttribute="leading" secondItem="Rn4-fT-hyo" secondAttribute="trailing" constant="8" id="oMV-yl-FwG"/>
                 <constraint firstItem="3QK-ER-8aI" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="yb3-EX-fW7"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
