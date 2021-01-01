@@ -13,9 +13,36 @@ enum ApiProvider {
     case getRates
 }
 
+extension ApiProvider {
+    
+    private func getKey(key: String) -> String {
+        guard let filePath = Bundle.main.path(forResource: "Credentials", ofType: "plist") else {
+          fatalError("Couldn't find file Credentials.plist!")
+        }
+        let plist = NSDictionary(contentsOfFile: filePath)
+        guard let value = plist?.object(forKey: key) as? String else {
+          fatalError("Couldn't find key \(key)!")
+        }
+        return value
+    }
+    
+    private var apiURL: String {
+      get {
+        getKey(key: "API_URL")
+      }
+    }
+    
+    private var accessKey: String {
+      get {
+        getKey(key: "ACCESS_KEY")
+      }
+    }
+}
+
 extension ApiProvider: TargetType {
+    
     public var baseURL: URL {
-        return URL(string: "http://api.currencylayer.com")!
+        return URL(string: apiURL)!
     }
     
     public var path: String {
@@ -43,7 +70,7 @@ extension ApiProvider: TargetType {
         switch self {
         case .getAvailableCurrencies,
              .getRates:
-            return .requestParameters(parameters: ["access_key": "5df5020c8cb1fa3194d5bd290700d656"], encoding: URLEncoding.queryString)
+            return .requestParameters(parameters: ["access_key": accessKey], encoding: URLEncoding.queryString)
         }
     }
     
