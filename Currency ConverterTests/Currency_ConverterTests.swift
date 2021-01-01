@@ -10,11 +10,15 @@ import XCTest
 
 class Currency_ConverterTests: XCTestCase {
     
-    var dataManager: DataManager!
+    var homeViewModel: HomeViewModel!
     
     override func setUp() {
         super.setUp()
-        dataManager = DataManager()
+        homeViewModel = HomeViewModel(dataManager: DataManager())
+    }
+    
+    func testGetUser() {
+        homeViewModel.fetchData()
     }
     
     
