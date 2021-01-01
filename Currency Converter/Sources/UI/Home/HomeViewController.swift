@@ -33,14 +33,14 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private func subscribe() {
         
-        viewModel!.list.asObservable().bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: HomeTableViewCell.self)) {  (row,element,cell) in
+        viewModel!.output.list.asObservable().bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: HomeTableViewCell.self)) {  (row,element,cell) in
             cell.labelCurrencyCode.text = element.rate.currencyCode
             cell.labelCurrencyName.text = element.rate.currencyName
             cell.labelValue.text = "\(element.conversion)"
         }.disposed(by: disposeBag)
         
         viewModel!
-            .selectedCurrency
+            .output.selectedCurrency
             .map { [weak self] in
                 if (self?.selectedCurrencyView == nil) {
                     self?.setUpSelectCurrencyContainer()
@@ -51,14 +51,14 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
             .subscribe().disposed(by: disposeBag)
         
         viewModel!
-            .onShowError
+            .output.onShowError
             .map { [weak self] in
                 self?.showAlert(title: "Error", message: $0.localizedDescription)
             }
             .subscribe().disposed(by: disposeBag)
         
         viewModel!
-            .onShowLoadingProgress
+            .output.onShowLoadingProgress
             .map {  [weak self] in
                 $0 ? self?.startLoaderIndicator() : self?.stopLoaderIndicator()
             }
@@ -93,7 +93,7 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
                     self?.showSelectCurrency()
                 }.disposed(by: disposeBag)
             
-            viewModel.fetchData()
+            viewModel.input.fetchData.accept(())
             
         } else {
             
@@ -129,7 +129,7 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         viewController.refreshPrevious = { [weak self] in
             if UserDefaultsUtils.selectedCurrencyCode != nil {
-                self?.viewModel.fetchData()
+                self?.viewModel.input.fetchData.accept(())
             }
         }
         guard let navigator = navigationController else {

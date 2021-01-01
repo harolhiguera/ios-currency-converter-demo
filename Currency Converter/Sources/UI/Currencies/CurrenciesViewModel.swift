@@ -11,33 +11,63 @@ import RxSwift
 
 struct CurrenciesViewModel {
     
-    var onShowLoadingProgress: Observable<Bool> {
-        return loadInProgress
-            .asObservable()
-            .distinctUntilChanged()
-    }
-    let onShowError = PublishSubject<Error>()
-    let currencies = PublishSubject<[RealmCurrency]>()
+    let input: Input
+    let output: Output
     
-    private let loadInProgress = BehaviorRelay(value: false)
     let disposeBag = DisposeBag()
-    
     let dataManager: DataManager
     
-    
-    func fetchData() {
-        self.loadInProgress.accept(true)
-        dataManager.fetchCurrencies().subscribe(onNext: { currencies in
-            self.currencies.onNext(currencies)
-            self.loadInProgress.accept(false)
-        }, onError: { error in
-            self.onShowError.onNext(error)
-            self.loadInProgress.accept(false)
-        }, onCompleted:  nil , onDisposed: nil)
-        .disposed(by: disposeBag)
+    init(dataManager: DataManager) {
+        self.dataManager = dataManager
+        
+        let fetchData = PublishRelay<Void>()
+        let setSelectedCurrencyCode = PublishRelay<String>()
+        
+        self.input = Input(
+            fetchData: fetchData,
+            setSelectedCurrencyCode: setSelectedCurrencyCode)
+        
+        let onShowLoadingProgress: BehaviorRelay<Bool> = BehaviorRelay(value: false)
+        let onShowError = PublishSubject<Error>()
+        let currencies = PublishSubject<[RealmCurrency]>()
+        
+        self.output = Output(
+            onShowLoadingProgress: onShowLoadingProgress,
+            onShowError: onShowError,
+            currencies: currencies)
+        
+        fetchData
+            .observeOn(MainScheduler.asyncInstance)
+            .subscribe(onNext: { [self] in
+                onShowLoadingProgress.accept(true)
+                self.dataManager.fetchCurrencies().subscribe(onNext: { result in
+                    currencies.onNext(result)
+                    onShowLoadingProgress.accept(false)
+                }, onError: { error in
+                    onShowError.onNext(error)
+                    onShowLoadingProgress.accept(false)
+                }, onCompleted: nil, onDisposed: nil)
+                .disposed(by: disposeBag)
+            })
+            .disposed(by: disposeBag)
+        
+        setSelectedCurrencyCode
+            .observeOn(MainScheduler.asyncInstance)
+            .subscribe(onNext: { [self] code in
+                self.dataManager.setSelectedCurrencyCode(code: code)
+            })
+            .disposed(by: disposeBag)
     }
-    
-    func setSelectedCurrencyCode(code: String) {
-        dataManager.setSelectedCurrencyCode(code: code)
+}
+
+extension CurrenciesViewModel {
+    struct Input {
+        let fetchData: PublishRelay<Void>
+        let setSelectedCurrencyCode: PublishRelay<String>
+    }
+    struct Output {
+        let onShowLoadingProgress: BehaviorRelay<Bool>
+        let onShowError: PublishSubject<Error>
+        let currencies: PublishSubject<[RealmCurrency]>
     }
 }

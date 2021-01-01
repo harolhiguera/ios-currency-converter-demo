@@ -25,32 +25,32 @@ class CurrenciesViewController: UIViewController {
         viewModel = CurrenciesViewModel(dataManager: DataManager())
         tableView.register(UINib(nibName: "CurrenciesTableViewCell", bundle: nil), forCellReuseIdentifier: cellIdentifier)
         subscribe()
-        viewModel.fetchData()
+        viewModel.input.fetchData.accept(())
     }
     
     
     private func subscribe() {
         
-        viewModel!.currencies.bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: CurrenciesTableViewCell.self)) {  (row,element,cell) in
+        viewModel!.output.currencies.bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: CurrenciesTableViewCell.self)) {  (row,element,cell) in
             cell.labelName.text = element.currencyName
             cell.labelCode.text = element.currencyCode
         }.disposed(by: disposeBag)
         
         tableView.rx.modelSelected(RealmCurrency.self).subscribe(onNext: {  [weak self] in
-            self?.viewModel.setSelectedCurrencyCode(code: $0.currencyCode)
+            self?.viewModel.input.setSelectedCurrencyCode.accept($0.currencyCode)
             self?.refreshPrevious!()
             self?.pop()
         }).disposed(by: disposeBag)
         
         viewModel!
-            .onShowError
+            .output.onShowError
             .map { [weak self] in
                 self?.showAlert(title: "Error", message: $0.localizedDescription)
             }
             .subscribe().disposed(by: disposeBag)
         
         viewModel!
-            .onShowLoadingProgress
+            .output.onShowLoadingProgress
             .map {  [weak self] in
                 $0 ? self?.startLoaderIndicator() : self?.stopLoaderIndicator()
             }
