@@ -57,18 +57,21 @@ class DataManager {
      Fails if no currency selected. But it shouldn't accoring to the logic.
      */
     private func getHomeDataModelFromDisk() -> Observable<HomeDataModel> {
-        let selectedCurrencyCode = UserDefaultsUtils.selectedCurrencyCode ?? ""
-        return self.getRatesFor(currencyCode: selectedCurrencyCode)
-            .flatMap({ rates in
-                self.currenciesRepository.getCurrency(code: selectedCurrencyCode)
-                    .flatMap({ currency in
-                        Observable.create { observer in
-                            observer.onNext(HomeDataModel(rates: rates, selectedCurrency: currency))
-                            observer.onCompleted()
-                            return Disposables.create()
-                        }
+        return getCurrencySelectedCode()
+            .flatMap({ code in
+                self.getRatesFor(currencyCode: code)
+                    .flatMap({ rates in
+                        self.currenciesRepository.getCurrency(code: code)
+                            .flatMap({ currency in
+                                Observable.create { observer in
+                                    observer.onNext(HomeDataModel(rates: rates, selectedCurrency: currency))
+                                    observer.onCompleted()
+                                    return Disposables.create()
+                                }
+                            })
                     })
             })
+        
     }
     
     private func getRatesFor(currencyCode: String) -> Observable<[RealmRate]> {
@@ -113,6 +116,21 @@ class DataManager {
             .request(.getRates)
             .filterSuccessfulStatusCodes()
             .map(GetRatesResponse.self)
+    }
+    
+    private func getCurrencySelectedCode() -> Observable<String> {
+        return Observable.create { observer in
+            guard let code = UserDefaultsUtils.selectedCurrencyCode else {
+                let errorTemp = NSError(domain: "", code: 0, userInfo: ["NSLocalizedDescription": "Select a currency"])
+                observer.onError(errorTemp as Error)
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            observer.onNext(code)
+            observer.onCompleted()
+            return Disposables.create()
+        }
+        
     }
     
     private func shouldRefreshData() -> Bool {

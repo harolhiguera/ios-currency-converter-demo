@@ -27,23 +27,25 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
         viewModel = HomeViewModel(dataManager: DataManager())
         tableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellIdentifier)
         subscribe()
-        setUpSelectCurrencyContainer()
-        
+        viewModel.input.fetchData.accept(())
     }
     
     private func subscribe() {
         
-        viewModel!.output.list.asObservable().bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: HomeTableViewCell.self)) {  (row,element,cell) in
-            cell.labelCurrencyCode.text = element.rate.currencyCode
-            cell.labelCurrencyName.text = element.rate.currencyName
-            cell.labelValue.text = "\(element.conversion)"
-        }.disposed(by: disposeBag)
+        viewModel!
+            .output.list
+            .asObservable()
+            .bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: HomeTableViewCell.self)) {  (row,element,cell) in
+                cell.labelCurrencyCode.text = element.rate.currencyCode
+                cell.labelCurrencyName.text = element.rate.currencyName
+                cell.labelValue.text = "\(element.conversion)"
+            }.disposed(by: disposeBag)
         
         viewModel!
             .output.selectedCurrency
             .map { [weak self] in
                 if (self?.selectedCurrencyView == nil) {
-                    self?.setUpSelectCurrencyContainer()
+                    self?.setUpSelectCurrencyContainer(currencySelected: true)
                 }
                 self?.selectedCurrencyView!.labelCurencyCode.text = $0.currencyCode
                 self?.selectedCurrencyView!.labelCurrencyName.text = $0.currencyName
@@ -54,6 +56,9 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
             .output.onShowError
             .map { [weak self] in
                 self?.showAlert(title: "Error", message: $0.localizedDescription)
+                if $0.localizedDescription == "Select a currency" {
+                    self?.setUpSelectCurrencyContainer(currencySelected: false)
+                }
             }
             .subscribe().disposed(by: disposeBag)
         
@@ -65,18 +70,18 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
             .subscribe().disposed(by: disposeBag)
     }
     
-    private func setUpSelectCurrencyContainer() {
+    private func setUpSelectCurrencyContainer(currencySelected: Bool) {
         
         selectContainer.subviews.forEach {
             $0.removeFromSuperview()
         }
         
-        if UserDefaultsUtils.selectedCurrencyCode != nil {
+        if currencySelected {
             
             selectedCurrencyView = SelectedCurrencyView(frame: CGRect.zero)
             selectedCurrencyView!.addToContainer(container: selectContainer)
             addTapGestureRecognizer()
-        
+            
             selectedCurrencyView!.fieldValue
                 .rx
                 .text
@@ -92,8 +97,6 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
                 .bind { [weak self] in
                     self?.showSelectCurrency()
                 }.disposed(by: disposeBag)
-            
-            viewModel.input.fetchData.accept(())
             
         } else {
             
@@ -128,9 +131,7 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
             return
         }
         viewController.refreshPrevious = { [weak self] in
-            if UserDefaultsUtils.selectedCurrencyCode != nil {
-                self?.viewModel.input.fetchData.accept(())
-            }
+            self?.viewModel.input.fetchData.accept(())
         }
         guard let navigator = navigationController else {
             return

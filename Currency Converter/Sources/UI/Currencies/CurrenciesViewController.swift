@@ -31,16 +31,21 @@ class CurrenciesViewController: UIViewController {
     
     private func subscribe() {
         
-        viewModel!.output.currencies.bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: CurrenciesTableViewCell.self)) {  (row,element,cell) in
-            cell.labelName.text = element.currencyName
-            cell.labelCode.text = element.currencyCode
-        }.disposed(by: disposeBag)
+        viewModel!
+            .output
+            .currencies
+            .bind(to: tableView.rx.items(cellIdentifier: cellIdentifier, cellType: CurrenciesTableViewCell.self)) {  (row,element,cell) in
+                cell.labelName.text = element.currencyName
+                cell.labelCode.text = element.currencyCode
+            }.disposed(by: disposeBag)
         
-        tableView.rx.modelSelected(RealmCurrency.self).subscribe(onNext: {  [weak self] in
-            self?.viewModel.input.setSelectedCurrencyCode.accept($0.currencyCode)
-            self?.refreshPrevious!()
-            self?.pop()
-        }).disposed(by: disposeBag)
+        tableView
+            .rx
+            .modelSelected(RealmCurrency.self).subscribe(onNext: {  [weak self] in
+                self?.viewModel.input.setSelectedCurrencyCode.accept($0.currencyCode)
+                self?.refreshPrevious!()
+                self?.pop()
+            }).disposed(by: disposeBag)
         
         viewModel!
             .output.onShowError
