@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct HomeTableViewCellDataModel {
+struct HomeTableViewCellDataModel: Equatable {
     let rate: RealmRate
     let conversion: Double
 }

@@ -13,6 +13,8 @@ target 'Currency Converter' do
   target 'Currency ConverterTests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'RxTest'
+    pod 'RxBlocking'
   end
 
   target 'Currency ConverterUITests' do
