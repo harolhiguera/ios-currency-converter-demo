@@ -15,9 +15,9 @@ struct HomeViewModel {
     let output: Output
     
     let disposeBag = DisposeBag()
-    let dataManager: DataManager
+    let dataManager: DataManagerProtocol
     
-    init(dataManager: DataManager) {
+    init(dataManager: DataManagerProtocol = DataManager()) {
         self.dataManager = dataManager
         
         let convertText = PublishRelay<String?>()
@@ -28,7 +28,7 @@ struct HomeViewModel {
             fetchData: fetchData)
         
         let onShowLoadingProgress: BehaviorRelay<Bool> = BehaviorRelay(value: false)
-        let onShowError = PublishSubject<Error>()
+        let onShowError = PublishSubject<String>()
         let list: BehaviorRelay<[HomeTableViewCellDataModel]>  = BehaviorRelay(value: [])
         let selectedCurrency = PublishSubject<RealmCurrency>()
         
@@ -65,7 +65,7 @@ struct HomeViewModel {
                     )
                     onShowLoadingProgress.accept(false)
                 }, onError: { error in
-                    onShowError.onNext(error)
+                    onShowError.onNext(error.localizedDescription)
                     onShowLoadingProgress.accept(false)
                 }, onCompleted: nil, onDisposed: nil)
                 .disposed(by: disposeBag)
@@ -82,7 +82,7 @@ extension HomeViewModel {
     }
     struct Output {
         let onShowLoadingProgress: BehaviorRelay<Bool>
-        let onShowError: PublishSubject<Error>
+        let onShowError: PublishSubject<String>
         let list: BehaviorRelay<[HomeTableViewCellDataModel]>
         let selectedCurrency: PublishSubject<RealmCurrency>
     }

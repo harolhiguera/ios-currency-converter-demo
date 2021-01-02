@@ -11,7 +11,13 @@ import Moya
 import Alamofire
 import RealmSwift
 
-class DataManager {
+protocol DataManagerProtocol: class {
+    func fetchModelForHome() -> Observable<HomeDataModel>
+    func fetchCurrencies() -> Observable<[RealmCurrency]>
+    func setSelectedCurrencyCode(code: String)
+}
+
+class DataManager: DataManagerProtocol {
     var apiProvider: MoyaProvider<ApiProvider>
     let currenciesRepository: CurrenciesRepository
     let ratesRepository: RatesRepository
@@ -26,7 +32,7 @@ class DataManager {
     /**
      Fetch Data for HomeViewController
      */
-    func fetchModelForHome() -> Observable<HomeDataModel>{
+    func fetchModelForHome() -> Observable<HomeDataModel> {
         if !self.shouldRefreshData() {
             return self.getHomeDataModelFromDisk()
         }

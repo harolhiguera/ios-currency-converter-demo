@@ -22,7 +22,7 @@ class CurrenciesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel = CurrenciesViewModel(dataManager: DataManager())
+        viewModel = CurrenciesViewModel()
         tableView.register(UINib(nibName: "CurrenciesTableViewCell", bundle: nil), forCellReuseIdentifier: cellIdentifier)
         subscribe()
         viewModel.input.fetchData.accept(())
@@ -50,7 +50,7 @@ class CurrenciesViewController: UIViewController {
         viewModel!
             .output.onShowError
             .map { [weak self] in
-                self?.showAlert(title: "Error", message: $0.localizedDescription)
+                self?.showAlert(title: "Error", message: $0)
             }
             .subscribe().disposed(by: disposeBag)
         

@@ -24,7 +24,7 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel = HomeViewModel(dataManager: DataManager())
+        viewModel = HomeViewModel()
         tableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellIdentifier)
         subscribe()
         viewModel.input.fetchData.accept(())
@@ -55,8 +55,8 @@ class HomeViewController: UIViewController, UIGestureRecognizerDelegate {
         viewModel!
             .output.onShowError
             .map { [weak self] in
-                self?.showAlert(title: "Error", message: $0.localizedDescription)
-                if $0.localizedDescription == "Select a currency" {
+                self?.showAlert(title: "Error", message: $0)
+                if $0 == "Select a currency" {
                     self?.setUpSelectCurrencyContainer(currencySelected: false)
                 }
             }

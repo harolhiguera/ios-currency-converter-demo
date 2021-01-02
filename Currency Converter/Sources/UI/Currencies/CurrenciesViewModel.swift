@@ -15,9 +15,9 @@ struct CurrenciesViewModel {
     let output: Output
     
     let disposeBag = DisposeBag()
-    let dataManager: DataManager
+    let dataManager: DataManagerProtocol
     
-    init(dataManager: DataManager) {
+    init(dataManager: DataManagerProtocol = DataManager()) {
         self.dataManager = dataManager
         
         let fetchData = PublishRelay<Void>()
@@ -28,7 +28,7 @@ struct CurrenciesViewModel {
             setSelectedCurrencyCode: setSelectedCurrencyCode)
         
         let onShowLoadingProgress: BehaviorRelay<Bool> = BehaviorRelay(value: false)
-        let onShowError = PublishSubject<Error>()
+        let onShowError = PublishSubject<String>()
         let currencies = PublishSubject<[RealmCurrency]>()
         
         self.output = Output(
@@ -44,7 +44,7 @@ struct CurrenciesViewModel {
                     currencies.onNext(result)
                     onShowLoadingProgress.accept(false)
                 }, onError: { error in
-                    onShowError.onNext(error)
+                    onShowError.onNext(error.localizedDescription)
                     onShowLoadingProgress.accept(false)
                 }, onCompleted: nil, onDisposed: nil)
                 .disposed(by: disposeBag)
@@ -67,7 +67,7 @@ extension CurrenciesViewModel {
     }
     struct Output {
         let onShowLoadingProgress: BehaviorRelay<Bool>
-        let onShowError: PublishSubject<Error>
+        let onShowError: PublishSubject<String>
         let currencies: PublishSubject<[RealmCurrency]>
     }
 }
