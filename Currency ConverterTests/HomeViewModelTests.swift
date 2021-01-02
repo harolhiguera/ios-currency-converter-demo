@@ -52,7 +52,6 @@ class HomeViewModelTests: XCTestCase {
             .disposed(by: disposeBag)
         
         testScheduler.createColdObservable([.next(5, ())])
-            .observeOn(MainScheduler.instance)
             .bind(to: homeViewModel.input.fetchData)
             .disposed(by: disposeBag)
         testScheduler.start()
@@ -83,7 +82,6 @@ class HomeViewModelTests: XCTestCase {
             .disposed(by: disposeBag)
         
         testScheduler.createColdObservable([.next(5, ())])
-            .observeOn(MainScheduler.instance)
             .bind(to: homeViewModel.input.fetchData)
             .disposed(by: disposeBag)
         testScheduler.start()
@@ -102,10 +100,43 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(retrievedItemsCount, expectedItemsCount)
         
         // Cell list content
-        let retrievedConversion: String = cellsList.events[1].value.element?.first?.rate.currencyName ?? ""
-        let expectedConversion = MockData.testRates.map {
+        let retrievedName: String = cellsList.events[1].value.element?.first?.rate.currencyName ?? ""
+        let expectedName = MockData.testRates.map {
             HomeTableViewCellDataModel(rate: $0, conversion: 0.0)
         }.first!.rate.currencyName
+        XCTAssertEqual(retrievedName, expectedName)
+    }
+    
+    func testCurrencyConversion() throws {
+        
+        let cellsList = testScheduler.createObserver([HomeTableViewCellDataModel].self)
+        let conversionText = "2.0"
+        
+        dataManager.setSelectedCurrencyCode(code: "some_code")
+        homeViewModel.input.fetchData.accept(())
+        
+        homeViewModel.output.list
+            .bind(to: cellsList)
+            .disposed(by: disposeBag)
+        
+        testScheduler.createColdObservable([.next(5, (conversionText))])
+            .bind(to: homeViewModel.input.convertText)
+            .disposed(by: disposeBag)
+        testScheduler.start()
+        
+        // Cell list count
+        let retrievedItemsCount = cellsList.events.count - 1 // Minus List initialization event
+        let expectedItemsCount = 1
+        XCTAssertEqual(retrievedItemsCount, expectedItemsCount)
+        
+        // Cell list content (Conversion)
+        let retrievedConversion: Double = cellsList.events[1].value.element?.first?.conversion ?? 0.0
+        let conversionTextDouble: Double = NSString(string: conversionText ).doubleValue
+        let expectedConversion = MockData.testRates.map {
+            HomeTableViewCellDataModel(
+                rate: $0,
+                conversion: ($0.exchangeRate * conversionTextDouble).roundToDecimal(2))
+        }.first!.conversion
         XCTAssertEqual(retrievedConversion, expectedConversion)
     }
 }
