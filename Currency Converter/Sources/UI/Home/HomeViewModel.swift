@@ -39,7 +39,6 @@ struct HomeViewModel {
             selectedCurrency: selectedCurrency)
         
         convertText
-            .observeOn(MainScheduler.asyncInstance)
             .map {
                 NSString(string: $0 ?? "0.0").doubleValue
             }
@@ -55,7 +54,6 @@ struct HomeViewModel {
             .disposed(by: disposeBag)
         
         fetchData
-            .observeOn(MainScheduler.asyncInstance)
             .subscribe(onNext: { [self] in
                 onShowLoadingProgress.accept(true)
                 self.dataManager.fetchModelForHome().subscribe(onNext: { model in

@@ -52,7 +52,6 @@ struct CurrenciesViewModel {
             .disposed(by: disposeBag)
         
         setSelectedCurrencyCode
-            .observeOn(MainScheduler.asyncInstance)
             .subscribe(onNext: { [self] code in
                 self.dataManager.setSelectedCurrencyCode(code: code)
             })
